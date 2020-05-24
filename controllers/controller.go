@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"golang-gorm/db"
+	"golang-gorm/errhandlers"
 	"golang-gorm/models"
 	"log"
 	"net/http"
@@ -34,7 +35,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 	userRes := mySql.Create(&user)
 	if userRes.Error != nil {
-		errCreate(w, res, userRes.Error)
+		errhandlers.ErrCreate(w, res, fmt.Sprintf("%s", userRes.Error))
 		return
 	} else {
 		cred := models.Credential{
@@ -45,21 +46,13 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 		credRes := mySql.Create(&cred)
 		if credRes.Error != nil {
-			errCreate(w, res, credRes.Error)
+			errhandlers.ErrCreate(w, res, fmt.Sprintf("%s", credRes.Error))
 			return
 		}
 	}
 
 	mySql.Close()
 
-	err = json.NewEncoder(w).Encode(res)
-	if err != nil {log.Fatal(err)}
-}
-
-func errCreate(w http.ResponseWriter, res models.Result, err error) {
-	res.Status = 0
-	res.Message = fmt.Sprintf("%s", err)
-	w.WriteHeader(http.StatusBadRequest)
 	err = json.NewEncoder(w).Encode(res)
 	if err != nil {log.Fatal(err)}
 }
