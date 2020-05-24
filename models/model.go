@@ -11,6 +11,7 @@ type User struct {
 
 type Credential struct {
 	gorm.Model
+	UserID uint
 	Email string `gorm:"unique; not null" json:"email"`
 	Password string `gorm:"not null" json:"password"`
 }
