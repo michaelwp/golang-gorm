@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	"golang-gorm/models"
 	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-
 )
 
 func MySql() *gorm.DB{
@@ -23,6 +23,8 @@ func MySql() *gorm.DB{
 
 	dbMysql, err := gorm.Open("mysql", DbUri)
 	if err != nil {log.Fatal(err)}
+
+	dbMysql.AutoMigrate(&models.User{}, &models.Credential{})
 
 	fmt.Println("connected to mysql database")
 	defer dbMysql.Close()
