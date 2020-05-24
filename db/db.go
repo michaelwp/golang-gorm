@@ -27,7 +27,6 @@ func MySql() *gorm.DB{
 	dbMysql.AutoMigrate(&models.User{}, &models.Credential{})
 
 	fmt.Println("connected to mysql database")
-	defer dbMysql.Close()
 
 	return dbMysql
 }
