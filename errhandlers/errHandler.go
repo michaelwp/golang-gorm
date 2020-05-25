@@ -2,7 +2,7 @@ package errhandlers
 
 import (
 	"encoding/json"
-	"golang-gorm/models"
+	"github.com/michaelwp/golang-gorm/models"
 	"log"
 	"net/http"
 )
