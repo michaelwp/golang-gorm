@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gorilla/mux"
-	"golang-gorm/controllers"
+	"github.com/michaelwp/golang-gorm/controllers"
 )
 
 func Router() *mux.Router{

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"golang-gorm/models"
+	"github.com/michaelwp/golang-gorm/models"
 	"log"
 	"os"
 

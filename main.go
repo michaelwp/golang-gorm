@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"golang-gorm/db"
-	"golang-gorm/routers"
+	"github.com/michaelwp/golang-gorm/db"
+	"github.com/michaelwp/golang-gorm/routers"
 	"log"
 	"net/http"
 )

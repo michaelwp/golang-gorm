@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"golang-gorm/db"
-	"golang-gorm/errhandlers"
-	"golang-gorm/models"
+	"github.com/michaelwp/golang-gorm/db"
+	"github.com/michaelwp/golang-gorm/errhandlers"
+	"github.com/michaelwp/golang-gorm/helpers"
+	"github.com/michaelwp/golang-gorm/models"
 	"log"
 	"net/http"
 	"strings"
@@ -43,10 +44,14 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		errhandlers.ErrCreate(w, res, fmt.Sprintf("%s", userRes.Error))
 		return
 	} else {
+
+		hash, err := helpers.EncryptPass([]byte(u.Password))
+		if err != nil {log.Fatal(err)}
+
 		cred := models.Credential{
 			UserID: user.ID,
 			Email: strings.ToLower(u.Email),
-			Password: u.Password,
+			Password: string(hash),
 		}
 
 		credRes := db.MySql().Create(&cred)
