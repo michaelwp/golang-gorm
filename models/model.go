@@ -1,6 +1,9 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -27,4 +30,20 @@ type Result struct {
 	 Status int `json:"status"`
 	 Message string `json:"message"`
 	 Data []User
+}
+
+type Claims struct {
+	UserId int `json:"UserId"`
+	jwt.StandardClaims
+}
+
+type TokenData struct {
+	Token string `json:"token"`
+	Expire int64 `json:"expire"`
+}
+
+type ResultToken struct {
+	Status int `json:"status"`
+	Message string `json:"message"`
+	Data TokenData
 }
