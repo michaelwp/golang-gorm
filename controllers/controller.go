@@ -27,7 +27,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {log.Fatal(err)}
 
-	err, _ = findEmail(u.Email)
+	_, err = findEmail(u.Email)
 
 	if err == nil {
 		errhandlers.ErrCreate(w, res, "Email already registered")
@@ -67,12 +67,44 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {log.Fatal(err)}
 }
 
-func findEmail(email string) (error, models.Credential) {
+func findEmail(email string) (models.Credential, error) {
 	var c models.Credential
 
 	credRes := db.MySql().
-		Where("email like ?", "%" + email + "%").
+		Where("email = ?", email).
 		Find(&c)
 
-	return credRes.Error, c
+	return c, credRes.Error
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	var c models.Credential
+	var res models.Result
+	errMsg := "Email/password not found"
+
+	res.Status = 1
+	res.Message = "successfully login"
+
+	w.Header().Set("content-type", "application/json")
+
+	err := json.NewDecoder(r.Body).Decode(&c)
+	if err != nil {log.Fatal(err)}
+
+	cred, err := findEmail(c.Email)
+	if err != nil {
+		res.Status = 0
+		res.Message = errMsg
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+
+	//_, _ = fmt.Fprintln(w, cred.Password)
+
+	err = helpers.CompareHash([]byte(cred.Password), []byte(c.Password))
+	if err != nil {
+		res.Status = 0
+		res.Message = errMsg
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+
+	_ = json.NewEncoder(w).Encode(res)
 }
