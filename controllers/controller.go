@@ -79,7 +79,8 @@ func findEmail(email string) (models.Credential, error) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	var c models.Credential
-	var res models.Result
+	var res models.ResultToken
+	var tokenData models.TokenData
 	errMsg := "Email/password not found"
 
 	res.Status = 1
@@ -104,6 +105,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		res.Status = 0
 		res.Message = errMsg
 		w.WriteHeader(http.StatusUnauthorized)
+	} else {
+		token, exp, err := helpers.CreateJwt(c.UserID)
+		if err != nil {log.Println(err)}
+
+		tokenData.Expire = exp
+		tokenData.Token = token
+		res.Data = tokenData
 	}
 
 	_ = json.NewEncoder(w).Encode(res)

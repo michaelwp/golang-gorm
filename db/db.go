@@ -2,21 +2,19 @@ package db
 
 import (
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
+	"github.com/michaelwp/golang-gorm/helpers"
 	"github.com/michaelwp/golang-gorm/models"
 	"log"
-	"os"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func MySql() *gorm.DB{
-	DbUser := loadDBCred("DB_USER")
-	DbPass := loadDBCred("DB_PASS")
-	DbHost := loadDBCred("DB_HOST")
-	DbPort := loadDBCred("DB_PORT")
-	DbName := loadDBCred("DB_NAME")
+	DbUser := helpers.GetEnv("DB_USER")
+	DbPass := helpers.GetEnv("DB_PASS")
+	DbHost := helpers.GetEnv("DB_HOST")
+	DbPort := helpers.GetEnv("DB_PORT")
+	DbName := helpers.GetEnv("DB_NAME")
 	DbUri := fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		DbUser, DbPass, DbHost, DbPort, DbName)
@@ -29,11 +27,4 @@ func MySql() *gorm.DB{
 	fmt.Println("connected to mysql database")
 
 	return dbMysql
-}
-
-func loadDBCred(key string) string {
-	err := godotenv.Load(".env")
-	if err != nil {log.Fatal(err)}
-
-	return os.Getenv(key)
 }
