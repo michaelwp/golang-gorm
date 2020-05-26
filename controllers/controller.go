@@ -98,8 +98,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
 
-	//_, _ = fmt.Fprintln(w, cred.Password)
-
 	err = helpers.CompareHash([]byte(cred.Password), []byte(c.Password))
 	if err != nil {
 		res.Status = 0
@@ -109,7 +107,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		token, exp, err := helpers.CreateJwt(c.UserID)
 		if err != nil {log.Println(err)}
 
-		tokenData.Expire = exp
+		tokenData.ExpiresAt = exp
 		tokenData.Token = token
 		res.Data = tokenData
 	}

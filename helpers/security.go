@@ -35,3 +35,21 @@ func CreateJwt(userId uint) (string, int64,  error) {
 	if err != nil {return "", 0, err}
 	return tokenString, expirationTime.Unix(), nil
 }
+
+func SignedJwt(tokenString string) (uint, error){
+	token, err := jwt.ParseWithClaims(
+		tokenString,
+		&models.Claims{},
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(GetEnv("SECRET_KEY")), nil
+		})
+
+	var userId uint
+
+	if err != nil {return 0, err}
+	if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
+		userId = uint(claims.UserId)
+	}
+
+	return userId, nil
+}

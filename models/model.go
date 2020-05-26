@@ -39,7 +39,7 @@ type Claims struct {
 
 type TokenData struct {
 	Token string `json:"token"`
-	Expire int64 `json:"expire"`
+	ExpiresAt int64 `json:"expire"`
 }
 
 type ResultToken struct {
